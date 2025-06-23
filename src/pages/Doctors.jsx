@@ -43,7 +43,7 @@ export const Doctors = () =>{
               return(
                 <>
                   <div onClick={()=> navigate(`/appintment/${_id}`)} key={index} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'>
-                    <img className='bg-blue-50 h-[240px] object-cover' src={image} alt="" />
+                    <img className='bg-blue-50 h-[240px] object-cover w-full' src={image} alt="" />
                     <div className='p-4'>
                     
                         {
