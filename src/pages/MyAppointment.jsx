@@ -4,9 +4,17 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useEffect } from "react";
+import {MoonLoader} from 'react-spinners'
+
+
+
 export const MyAppointment = () =>{
   const {backendUrl,token,getDoctorsData} = useContext(AppContext);
   const [appointments,setAppointments] = useState([]);
+
+
+  const [loading, setLoading] = useState(true);
+
 
   const months = [" ","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
@@ -19,15 +27,17 @@ export const MyAppointment = () =>{
   const getUserAppointments = async () =>{
     try {
       const {data} = await axios.get(backendUrl + '/api/user/appointments',{headers:{token}});
+      setLoading(true)
 
       if(data.success){
         setAppointments(data.appointments.reverse())
-        
+        setLoading(false)
       }
 
     } catch (error) {
       console.log(error)
       toast.error(error.message)
+      setLoading(false)
     }
   }
 
@@ -72,8 +82,24 @@ export const MyAppointment = () =>{
   useEffect(() =>{
     if(token){
       getUserAppointments()
+      
     }
   },[token])
+
+  if (loading) {
+  return (
+    <div className="flex justify-center items-center h-[50vh]">
+      <p className="text-gray-500 animate-pulse text-lg">Please wait...</p>
+      <MoonLoader
+  color="#0086db"
+  cssOverride={{}}
+  loading
+  size={18}
+  speedMultiplier={1}
+/>
+    </div>
+  );
+}
 
   return(
     <> 

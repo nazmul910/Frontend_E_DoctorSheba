@@ -1,28 +1,51 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import {AppContext} from "../context/AppContext"
+import {MoonLoader} from 'react-spinners'
 
 export const Doctors = () =>{
   const {speciality} = useParams();
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
 
   const [filterDoc,setFilterDoc] = useState([]);
   const [showFilter,setShowFilter] = useState(false)
   const {doctors} = useContext(AppContext);
 
   const applyFilter = () =>{
+
     if(speciality){
       setFilterDoc(doctors.filter(doc => doc.speciality === speciality))
     }else{
       setFilterDoc(doctors)
     }
+  
   }
 
   useEffect(()=>{
+    if (doctors.length > 0) {
     applyFilter();
+    setLoading(false);
+  }
   },[doctors,speciality])
 
-  return(
+if (loading) {
+  return (
+    <div className="flex justify-center items-center h-[50vh]">
+      <p className="text-gray-500 animate-pulse text-lg">Loading doctors...</p>
+      <MoonLoader
+  color="#0086db"
+  cssOverride={{}}
+  loading
+  size={18}
+  speedMultiplier={1}
+/>
+    </div>
+  );
+}
+
+  return doctors && (
     <>
       <div>
         <p className="text-gray-600">Browse through the doctors specialist</p>

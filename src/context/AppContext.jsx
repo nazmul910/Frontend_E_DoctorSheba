@@ -32,7 +32,7 @@ const AppContextProvider = (props) =>{
 
       if(data.success){
         setUserData(data.userData)
-        toast.success(data.message)
+        toast.success(data.message) 
       }else{
         toast.error(data.message)
       }

@@ -3,7 +3,7 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import {ClipLoader} from 'react-spinners'
 
 
 export const Login = () =>{
@@ -11,6 +11,8 @@ export const Login = () =>{
   const {token,setToken,backendUrl} = useContext(AppContext)
 
   const navigate = useNavigate()
+
+    const [loading, setLoading] = useState(false);
 
   const [state,setState] = useState('Sign Up');
   
@@ -23,26 +25,32 @@ export const Login = () =>{
     
     try {
       if(state === 'Sign Up'){
+        setLoading(true)
         const {data} = await axios.post(backendUrl + '/api/user/register',{name,password,email});
 
         if(data.success){
           localStorage.setItem('token',data.token);
           setToken(data.token)
           toast.success(data.message)
+          setLoading(false)
           
         }else{
           toast.error(data.message)
+          setLoading(false)
         }
 
       }else{
+        setLoading(true)
         const {data} = await axios.post(backendUrl + '/api/user/login',{email,password});
          if(data.success){
           localStorage.setItem('token',data.token);
           setToken(data.token)
           toast.success(data.message)
+          setLoading(false)
           
         }else{
           toast.error(data.message)
+          setLoading(false)
         }
       }
 
@@ -50,6 +58,7 @@ export const Login = () =>{
     } catch (error) {
       console.log(error)
       toast.error(error.message)
+      setLoading(false)
     }
 
   }
@@ -81,10 +90,14 @@ export const Login = () =>{
               <p >Password</p>
               <input className="border border-zinc-300 rounded w-full p-2 mt-1" type="password" onChange={(e) => setPassword(e.target.value)} value={password} required />
             </div>
-            <button type="submit" className="bg-primary text-white w-full py-2 rounded-md text-base">{state === 'Sign Up' ? 'Create Account' : 'Login'}</button >
+            <button type="submit" className="bg-primary text-white w-full flex justify-center items-center gap-x-2 py-2 rounded-md text-base">{state === 'Sign Up' ? 'Create Account' : 'Login'} {loading ?<ClipLoader
+  color="#ffffff"
+  size={18}
+/>:''}</button >
+
             {
               state === 'Sign Up'
-              ? <p>Already have an account? <span onClick={() => setState('Login')} className="text-primary underline cursor-pointer"> Login here</span></p>
+              ? <p>Already have an account? <span onClick={() => setState('Login')} className="text-primary underline cursor-pointer"> Login here </span></p>
              :  <p>Create an new account? <span onClick={() => setState('Sign Up')} className="text-primary underline cursor-pointer">click here</span></p>
             }
           </div>
